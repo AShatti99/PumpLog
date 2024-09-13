@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,11 +36,15 @@ public class User {
 
     @Override
     public String toString() {
-        String workoutPlansNames = workoutPlanList.stream()
-                .map(WorkoutPlan::getName)
-                .collect(Collectors.joining(", "));
+        String workoutPlansNames = "N/A";
+
+        if(!CollectionUtils.isEmpty(workoutPlanList)){
+            workoutPlansNames = workoutPlanList.stream()
+                    .map(WorkoutPlan::getName)
+                    .collect(Collectors.joining(", "));
+        }
 
         return String.format("User{id=%d, username='%s', email='%s', password='%s', workoutPlans=[%s]}",
-                id, username, email, password, workoutPlanList != null ? workoutPlansNames : "N/A");
+                id, username, email, password, workoutPlansNames);
     }
 }

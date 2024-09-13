@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingPathVariableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -32,5 +33,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body("Required path variable is missing: " + ex.getVariableName());
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<String> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        log.error("Required request parameter '{}' is missing", ex.getParameterName());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Required request parameter is missing: " + ex.getParameterName());
     }
 }

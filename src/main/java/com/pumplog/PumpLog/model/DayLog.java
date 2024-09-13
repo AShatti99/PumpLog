@@ -28,4 +28,10 @@ public class DayLog {
     @ManyToOne
     @JoinColumn(name = "exercise_id")
     private Exercise exercise;
+
+    @Override
+    public String toString() {
+        return String.format("DayLog{id=%d, date=%s, dailyLog='%s', exercise='%s'}",
+                id, date, dailyLog, exercise.getName());
+    }
 }

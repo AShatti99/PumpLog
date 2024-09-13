@@ -3,6 +3,7 @@ package com.pumplog.PumpLog.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,15 +42,22 @@ public class Exercise {
 
     @Override
     public String toString() {
-        String workoutPlanNames = workoutPlanList.stream()
-                .map(WorkoutPlan::getName)
-                .collect(Collectors.joining(", "));
+        String workoutPlanNames = "N/A";
+        String dayLogDates = "N/A";
 
-        String dayLogDates = dayLogList.stream()
-                .map(dayLog -> dayLog.getDate().toString())
-                .collect(Collectors.joining(", "));
+        if (!CollectionUtils.isEmpty(workoutPlanList)) {
+            workoutPlanNames = workoutPlanList.stream()
+                    .map(WorkoutPlan::getName)
+                    .collect(Collectors.joining(", "));
+        }
+
+        if (!CollectionUtils.isEmpty(dayLogList)) {
+            dayLogDates = dayLogList.stream()
+                    .map(dayLog -> dayLog.getDate().toString())
+                    .collect(Collectors.joining(", "));
+        }
 
         return String.format("Exercise{id=%d, name='%s', sets='%s', breakDuration='%s', workoutPlans=[%s], dayLogs=[%s]}",
-                id, name, sets, breakDuration, workoutPlanNames, dayLogList != null ? dayLogDates : "N/A");
+                id, name, sets, breakDuration, workoutPlanNames, dayLogDates);
     }
 }

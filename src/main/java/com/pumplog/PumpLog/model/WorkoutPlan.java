@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -43,11 +44,15 @@ public class WorkoutPlan {
 
     @Override
     public String toString() {
-        String exerciseNames = exerciseList.stream()
-                .map(Exercise::getName)
-                .collect(Collectors.joining(", "));
+        String exerciseNames = "N/A";
+
+        if (!CollectionUtils.isEmpty(exerciseList)) {
+            exerciseNames = exerciseList.stream()
+                    .map(Exercise::getName)
+                    .collect(Collectors.joining(", "));
+        }
 
         return String.format("WorkoutPlan{id=%d, name='%s', startDate=%s, endDate=%s, user='%s', exercises=[%s]}",
-                id, name, startDate, endDate, user, exerciseList != null ? exerciseNames : "N/A");
+                id, name, startDate, endDate, user.getUsername(), exerciseNames);
     }
 }

@@ -10,10 +10,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Log4j2
@@ -68,8 +73,8 @@ public class WorkoutPlanService {
 
         workoutPlanRepository.save(workoutPlan);
 
-        log.info("[WorkoutPlanService addWorkoutPlan] Workoutplan successfully created: {}", workoutPlan);
-        return ResponseEntity.ok("WorkoutPlan successfully created: " + workoutPlan);
+        log.info("[WorkoutPlanService addWorkoutPlan] Workoutplan successfully created. {}", workoutPlan);
+        return ResponseEntity.ok("WorkoutPlan successfully created. \n" + workoutPlan);
     }
 
     public ResponseEntity<String> updateWorkoutPlan(Long id, WorkoutPlanDTO workoutPlanDTO){
@@ -119,7 +124,78 @@ public class WorkoutPlanService {
 
         workoutPlanRepository.save(workoutPlan.get());
 
-        log.info("[WorkoutPlanService updateWorkoutPlan] Workoutplan successfully updated: {}", workoutPlan.get());
-        return ResponseEntity.ok("WorkoutPlan successfully updated: " + workoutPlan.get());
+        log.info("[WorkoutPlanService updateWorkoutPlan] Workoutplan successfully updated. {}", workoutPlan.get());
+        return ResponseEntity.ok("WorkoutPlan successfully updated. \n" + workoutPlan.get());
     }
+
+    public ResponseEntity<String> deleteWorkoutPlan(Long id){
+
+        log.info("[WorkoutPlanService deleteWorkoutPlan] Start validation");
+
+        if(id == null) {
+            log.error("[WorkoutPlanService deleteWorkoutPlan] Missing id");
+            return ResponseEntity.badRequest().body("Missing Id");
+        }
+
+        Optional<WorkoutPlan> workoutPlan = workoutPlanRepository.findById(id);
+        if(workoutPlan.isEmpty()) {
+            log.error("[WorkoutPlanService deleteWorkoutPlan] Workoutplan not found");
+            return ResponseEntity.badRequest().body("Workoutplan not found");
+        }
+
+        log.info("[WorkoutPlanService deleteWorkoutPlan] End validation");
+
+        workoutPlanRepository.delete(workoutPlan.get());
+
+        log.info("[WorkoutPlanService deleteWorkoutPlan] Workoutplan with id {} successfully deleted", id);
+        return ResponseEntity.ok("WorkoutPlan with id " + id + " successfully deleted.");
+    }
+
+    public ResponseEntity<Page<WorkoutPlanDTO>> getAllWorkoutPlans(String sort, String direction, int page, int size){
+
+        log.info("[WorkoutPlanService getAllWorkoutPlans] Creating page request");
+
+        if(StringUtils.isEmpty(sort)){
+            log.info("[WorkoutPlanService getAllWorkoutPlans] Missing sort. Sorting by start date");
+            sort = "startDate";
+        }
+
+        if(StringUtils.isEmpty(direction)){
+            log.info("[WorkoutPlanService getAllWorkoutPlans] Missing direction. Sorting in ascending order");
+            direction = "asc";
+        }
+        if (!direction.equalsIgnoreCase("asc") && !direction.equalsIgnoreCase("desc")) {
+            log.error("[WorkoutPlanService getAllWorkoutPlans] Invalid direction: {}", direction);
+            return ResponseEntity.badRequest().body(null);
+        }
+        Sort sortOrder = direction.equalsIgnoreCase("desc") ? Sort.by(sort).descending() : Sort.by(sort).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<WorkoutPlan> workoutPlanPage = workoutPlanRepository.findAll(pageable);
+        Page<WorkoutPlanDTO> workoutPlanDTOPage = workoutPlanPage.map(workoutPlanMapper::toDto);
+
+        log.info("[WorkoutPlanService getAllWorkoutPlans] Workoutplans successfully retrieved.");
+        return ResponseEntity.ok(workoutPlanDTOPage);
+    }
+
+    public ResponseEntity<WorkoutPlanDTO> getWorkoutPlan(Long id){
+
+        log.info("[WorkoutPlanService getWorkoutPlan] Start validation");
+
+        if(id == null) {
+            log.error("[WorkoutPlanService getWorkoutPlan] Missing id");
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        Optional<WorkoutPlan> workoutPlan = workoutPlanRepository.findById(id);
+        if(workoutPlan.isEmpty()) {
+            log.error("[WorkoutPlanService getWorkoutPlan] Workoutplan not found");
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        log.info("[WorkoutPlanService getWorkoutPlan] End validation");
+        return ResponseEntity.ok(workoutPlanMapper.toDto(workoutPlan.get()));
+    }
+
+
 }

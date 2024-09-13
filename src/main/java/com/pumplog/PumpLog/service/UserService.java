@@ -135,8 +135,8 @@ public class UserService {
 
         userRepository.save(user);
 
-        log.info("[UserService registration] User successfully registered: {}", user);
-        return ResponseEntity.ok("User successfully registered: " + user);
+        log.info("[UserService registration] User successfully registered. {}", user);
+        return ResponseEntity.ok("User successfully registered. \n" + user);
     }
 
     public ResponseEntity<String> login(UserDTO userDTO){
@@ -175,8 +175,8 @@ public class UserService {
 
         JwtDTO jwtDTO = jwtUtils.generateToken(username);
 
-        log.info("[UserService login] User successfully logged in with token: {} created at {} and expires at {} ", jwtDTO.getToken(), jwtDTO.getCreatedAt(), jwtDTO.getExpiresAt());
-        return ResponseEntity.ok("User successfully logged in with token: " + jwtDTO.getToken() + "\nCreated at " + jwtDTO.getCreatedAt() + "\nExpires at " + jwtDTO.getExpiresAt());
+        log.info("[UserService login] User successfully logged in. Token: {} \nCreated at {} \nExpires at {} ", jwtDTO.getToken(), jwtDTO.getCreatedAt(), jwtDTO.getExpiresAt());
+        return ResponseEntity.ok("User successfully logged in. \nToken: " + jwtDTO.getToken() + "\nCreated at " + jwtDTO.getCreatedAt() + "\nExpires at " + jwtDTO.getExpiresAt());
     }
 
     private boolean isValid(String str, String REGEX){

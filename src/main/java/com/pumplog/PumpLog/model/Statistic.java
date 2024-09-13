@@ -28,4 +28,10 @@ public class Statistic {
     @ManyToOne
     @JoinColumn(name = "exercise_id")
     private Exercise exercise;
+
+    @Override
+    public String toString() {
+        return String.format("Statistic{id=%d, date=%s, max_weight=%f, exercise='%s'}",
+                id, date, max_weight, exercise.getName());
+    }
 }
