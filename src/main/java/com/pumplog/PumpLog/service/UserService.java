@@ -79,7 +79,6 @@ public class UserService {
     @Autowired
     private JwtUtils jwtUtils;
 
-
     public ResponseEntity<String> registration(UserDTO userDTO){
 
         log.info("[UserService registration] Start validation");

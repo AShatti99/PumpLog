@@ -21,9 +21,9 @@ public class WorkoutPlanController {
     @Autowired
     private WorkoutPlanService workoutPlanService;
 
-
     @PostMapping(value = "/create")
     @ValidateJwt
+    @Operation(summary = "Create a workout plan")
     public ResponseEntity<String> createWorkoutPlan(@RequestBody WorkoutPlanDTO workoutPlanDTO){
 
         StopWatch stopWatch = new StopWatch();
@@ -42,7 +42,7 @@ public class WorkoutPlanController {
 
     @PutMapping(value = "/update/{id}")
     @ValidateJwt
-    @Operation(summary = "Get all workout plans")
+    @Operation(summary = "Update a workout plan")
     public ResponseEntity<String> updateWorkoutPlan(@PathVariable Long id, @RequestBody WorkoutPlanDTO workoutPlanDTO){
 
         StopWatch stopWatch = new StopWatch();
@@ -78,7 +78,7 @@ public class WorkoutPlanController {
 
     @GetMapping(value = "/all")
     @ValidateJwt
-    @Operation(summary = "Get all workout plans paginated")
+    @Operation(summary = "Get all workout plans paged")
     public ResponseEntity<Page<WorkoutPlanDTO>> getAllWorkoutPlans(@RequestParam(required = false) String sort, @RequestParam(required = false) String direction,
                                                                    @RequestParam Integer page, @RequestParam Integer size){
 

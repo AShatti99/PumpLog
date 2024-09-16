@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,4 +17,5 @@ public class WorkoutPlanDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private String user;
+    private List<String> exerciseNames;
 }

@@ -36,7 +36,7 @@ public class WorkoutPlan {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "EXERCISE_WORKOUT_PLAN",
             joinColumns = @JoinColumn(name = "WORKOUT_PLAN_ID"),
             inverseJoinColumns = @JoinColumn(name = "EXERCISE_ID"))

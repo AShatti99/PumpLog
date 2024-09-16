@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Log4j2
@@ -143,6 +142,13 @@ public class WorkoutPlanService {
             return ResponseEntity.badRequest().body("Workoutplan not found");
         }
 
+        String username = workoutPlan.get().getUser().getUsername();
+        String requestUsername = (String) request.getAttribute("username");
+        if(!username.equals(requestUsername)) {
+            log.error("[WorkoutPlanService deleteWorkoutPlan] It's not your workout plan");
+            return ResponseEntity.badRequest().body("It's not your workout plan");
+        }
+
         log.info("[WorkoutPlanService deleteWorkoutPlan] End validation");
 
         workoutPlanRepository.delete(workoutPlan.get());
@@ -196,6 +202,5 @@ public class WorkoutPlanService {
         log.info("[WorkoutPlanService getWorkoutPlan] End validation");
         return ResponseEntity.ok(workoutPlanMapper.toDto(workoutPlan.get()));
     }
-
 
 }
